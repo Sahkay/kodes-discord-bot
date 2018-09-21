@@ -1,1 +1,2 @@
-worker: npm -Dserver.port=$PORT start
+worker: npm start
+web: Run worker not web
