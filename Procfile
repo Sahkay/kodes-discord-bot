@@ -1,1 +1,1 @@
-worker: npm start
+DiscordJS: node index.js
