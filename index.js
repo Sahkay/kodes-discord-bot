@@ -13,6 +13,8 @@ client.on('message', msg => {
   }
 });
 
+client.login("NDkyODU0Mzk0OTI5MjgzMDcy.DoceAg.t6N7FHeP1EBy3_sDHMEyCk3x5Vw")
+
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname))
 
