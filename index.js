@@ -27,7 +27,7 @@ client.on('message', msg => {
         axios.get(config.searchUrl + args[1]).then(response => {
           console.log(response.data);
           console.log(typeof response.data);
-          let results = JSON.parse(trim(response.data));
+          let results = JSON.parse(response.data.trim());
           let message = "";
           console.log(typeof results);
           console.log(results);
