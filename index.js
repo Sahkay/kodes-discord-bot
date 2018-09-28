@@ -1,3 +1,4 @@
+const request = require('request');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = {
@@ -22,19 +23,15 @@ client.on('message', msg => {
       if (args.length < 2) {
         msg.reply("Missing item name argument.")
       } else {
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-          if (this.readyState === 4 && this.status === 200) {
-            let response = JSON.parse(this.responseText);
-            if (response["Status"] === "Success") {
-              msg.reply(JSON.stringify(response, null, 2));
-            } else {
-              msg.reply(this.responseText);
-            }
+        request(config.searchUrl + args[1], {
+          json: true
+        }, (err, res, body) => {
+          if (err) {
+            msg.reply(err);
+          } else {
+            msg.reply(body);
           }
-        }
-        request.open("GET", config.searchUrl + args[1]);
-        request.send();
+        })
       }
     }
   }
