@@ -29,6 +29,7 @@ client.on('message', msg => {
           let results = JSON.parse(JSON.stringify(response.data));
           let message = "";
           console.log(typeof results);
+          console.log(results);
           results.forEach(function(value, index) {
             message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
           })
