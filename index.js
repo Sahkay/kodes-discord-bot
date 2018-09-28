@@ -22,7 +22,7 @@ client.on('message', msg => {
       if (args.length < 2) {
         msg.reply("Missing item name argument.")
       } else {
-        let request = new XMLHTTPRequest();
+        let request = new XMLHttpRequest();
         request.onreadystatechange = function() {
           if (this.readyState === 4 && this.status === 200) {
             let response = JSON.parse(this.responseText);
