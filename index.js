@@ -25,8 +25,8 @@ client.on('message', msg => {
         msg.reply("Missing item name argument.")
       } else {
         axios.get(config.searchUrl + args[1]).then(response => {
-          console.log(response);
-          let results = JSON.parse(response);
+          console.log(response.data);
+          let results = JSON.parse(response.data);
           let message = "";
           results.forEach(function(value, index) {
             message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
