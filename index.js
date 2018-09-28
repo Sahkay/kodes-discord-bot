@@ -29,6 +29,7 @@ client.on('message', msg => {
           if (err) {
             msg.reply(err);
           } else {
+            console.log(body);
             msg.reply(body);
           }
         })
