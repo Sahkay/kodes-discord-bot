@@ -28,7 +28,7 @@ client.on('message', msg => {
           console.log(response.data);
           console.log(typeof response.data);
           let results = JSON.parse(response.data.trim());
-          let message = "If your desired item is not below please refine your search:";
+          let message = "If your desired item is not below please refine your search:\n";
           console.log(results);
           results = results.slice(0, 10);
           results.forEach(function(value, index) {
