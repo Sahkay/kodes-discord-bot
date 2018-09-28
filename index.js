@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = {
   prefix: '!',
+  bddatabaseUrl: 'https://bddatabase.net/',
   searchUrl: 'https://bddatabase.net/ac.php?l=us&term='
 };
 
@@ -30,8 +31,12 @@ client.on('message', msg => {
             msg.reply(err);
           } else {
             console.log(body);
-            console.log(typeof body);
-            //msg.reply(body);
+            let results = JSON.parse(body);
+            let message = "";
+            results.forEach(function(value, index) {
+              message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
+            })
+            msg.channel.send(message);
           }
         })
       }
