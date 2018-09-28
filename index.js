@@ -1,4 +1,4 @@
-const request = require('request');
+const axios = require('axios');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = {
@@ -24,20 +24,16 @@ client.on('message', msg => {
       if (args.length < 2) {
         msg.reply("Missing item name argument.")
       } else {
-        request(config.searchUrl + args[1], {
-          json: true
-        }, (err, res, body) => {
-          if (err) {
-            msg.reply(err);
-          } else {
-            console.log(body);
-            let results = JSON.parse(body);
-            let message = "";
-            results.forEach(function(value, index) {
-              message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
-            })
-            msg.channel.send(message);
-          }
+        axios.get(config.searchUrl + args[1]).then(response => {
+          console.log(response);
+          let results = JSON.parse(response);
+          let message = "";
+          results.forEach(function(value, index) {
+            message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
+          })
+          msg.channel.send(message);
+        }).catch(error => {
+          console.log(error);
         })
       }
     }
