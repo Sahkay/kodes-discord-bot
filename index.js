@@ -32,7 +32,7 @@ client.on('message', msg => {
           console.log(results);
           results = results.slice(0, 10);
           results.forEach(function(value, index) {
-            message += value.name + " ID: " + value.value + "\n";
+            message += value.name + " " + value.value + "\n";
           })
           msg.channel.send(message);
         }).catch(error => {
