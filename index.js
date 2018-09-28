@@ -30,7 +30,8 @@ client.on('message', msg => {
             msg.reply(err);
           } else {
             console.log(body);
-            msg.reply(body);
+            console.log(typeof body);
+            //msg.reply(body);
           }
         })
       }
