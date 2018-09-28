@@ -28,11 +28,11 @@ client.on('message', msg => {
           console.log(response.data);
           console.log(typeof response.data);
           let results = JSON.parse(response.data.trim());
-          let message = "";
-          console.log(typeof results);
+          let message = "If your desired item is not below please refine your search:";
           console.log(results);
+          results = results.slice(0, 10);
           results.forEach(function(value, index) {
-            message += (index + 1) + ": " + value.name + " grade " + value.grade + "\n ";
+            message += "id: " + value.value + " name: " + value.name + "\n";
           })
           msg.channel.send(message);
         }).catch(error => {
