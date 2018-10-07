@@ -57,7 +57,7 @@ function delRecord(id) {
       servers.splice(i, 1);
     }
   } */
-  global.pool.query("DELETE FROM serverData WHERE serverID = $1", [id], (err, res) => {
+  global.pool.query("DELETE FROM serverData WHERE serverID = ${id}", (err, res) => {
     if (err) throw err;
   });
 }
