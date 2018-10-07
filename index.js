@@ -2,8 +2,7 @@ const axios = require('axios');
 const sqlite = require('sqlite');
 const Commando = require('discord.js-commando');
 const client = new Commando.Client({
-  owner: '206620273443602432',
-  commandPrefix: "!"
+  owner: '206620273443602432'
 });
 const path = require('path');
 const config = {
@@ -18,6 +17,10 @@ client.registry.registerGroups([
   ['roles', 'Commands related to roles and their assignment.'],
   ['moderation', 'Commands related to server moderation']
 ]).registerDefaults().registerCommandsIn(path.join(__dirname, 'commands'))
+
+client.setProvider(
+  sqlite.open(path.join(__dirname, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
+).catch(console.error);
 
 client
   .on('error', console.error)
