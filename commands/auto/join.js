@@ -10,12 +10,20 @@ module.exports = class JoinCommand extends Commando.Command {
       memberName: "join",
       description: "Sets up the current channel for user join messages.",
       examples: ["join Welcome USER"],
-      guildOnly: true
+      guildOnly: true,
+      args: [{
+        key: 'text',
+        prompt: "What would you like the welcome message to be?",
+        type: "string",
+        infinite: true
+      }]
     })
   }
 
-  run(msg) {
-    records.put(msg.member.guild.id, "join", msg);
+  run(msg, {
+    text
+  }) {
+    records.put(msg.member.guild.id, "join", text);
     records.put(msg.member.guild.id, 'channel', msg.channel.name);
   }
 }
