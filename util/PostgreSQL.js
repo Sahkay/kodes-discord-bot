@@ -25,7 +25,7 @@ const Sequelize = require('sequelize');
 
 const {
   DB
-} = process.env;
+} = process.env.DATABASE_URL;
 const database = new Sequelize(DB, {
   logging: false
 });
