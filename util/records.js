@@ -43,7 +43,7 @@ function setRecord(id, property, value) {
       id: id
     });
     servers[servers.length - 1][property] = value; */
-    global.pool.query("INSERT INTO serverData (serverID, ${property}) VALUES ($1, $2)", [id, value], (err, res) => {
+    global.pool.query(`INSERT INTO serverData (serverID, ${property}) VALUES ($1, $2)`, [id, value], (err, res) => {
       if (err) throw err;
     });
   }
