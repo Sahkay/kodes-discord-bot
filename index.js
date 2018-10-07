@@ -88,9 +88,9 @@ client
       }
     }).then(server => {
       console.log(server);
-      if (server.join != undefined && server.channel != undefined) {
-        let msg = server.join.replace('{user}', '<@' + member.id + '>');
-        member.guild.channels.find("name", server.channel).send(msg, {
+      if (server.joinmsg != undefined && server.msgchannel != undefined) {
+        let msg = server.joinmsg.replace('{user}', '<@' + member.id + '>');
+        member.guild.channels.find("name", server.msgchannel).send(msg, {
           files: [member.user.avatarURL]
         });
       }
