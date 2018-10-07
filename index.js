@@ -5,6 +5,7 @@ const client = new Commando.Client({
   owner: '206620273443602432'
 });
 const path = require('path');
+const records = require('./util/records');
 const config = {
   prefix: '!',
   bddatabaseUrl: 'https://bddatabase.net/',
@@ -58,6 +59,27 @@ client
 			${enabled ? 'enabled' : 'disabled'}
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
 		`);
+  })
+  .on('guildCreate', guild => {
+    records.add(guild.id);
+  })
+  .on('guildDelete', guild => {
+    records.remove(guild.id);
+  })
+  .on('guildMemberAdd', member => {
+    let server = records.get(member.guild.id);
+    if (server.join != undefined && server.channel != undefined) {
+      let msg = server.join.replace('{user}', '<@' + member.id + '>');
+      member.guild.channels.find("name", server.channel).send(msg);
+    }
+    if (server.role != undefined) {
+      let role = member.guild.roles.find("name", server.role);
+      if (role != undefined) {
+        member.addRole(role).catch(error => {
+          member.guild.owner.send("Error on **" + member.guild.name + "**: I dont have the permission to auto-assign the role you set. Make sure my role `Welcome Bot` is higher in the roles list than the one you want me to auto-assign");
+        });
+      }
+    }
   });
 
 client.login(process.env.TOKEN)

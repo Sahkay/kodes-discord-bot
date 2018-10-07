@@ -1,4 +1,5 @@
 const Commando = require('discord.js-commando');
+const records = require('.../util/records');
 
 module.exports = class JoinCommand extends Commando.Command {
   constructor(client) {
@@ -14,12 +15,7 @@ module.exports = class JoinCommand extends Commando.Command {
   }
 
   run(msg) {
-    const channel = msg.channel;
-    const messageArg = msg.argString;
-    this.client.on("guildMemberAdd", member => {
-      member.guild.channels.get(channel.id).send(messageArg.replace("USER", member), {
-        files: [member.user.avatarURL]
-      });
-    })
+    records.put(msg.member.guild.id, "join", msg);
+    records.put(msg.member.guild.id, 'channel', msg.channel);
   }
 }
