@@ -1,4 +1,12 @@
-const sqlite = require('sqlite');
+const {
+  Pool
+} = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
+const SequelizeProvider = require("./util/sequelize");
+const Database = require("./util/PostgreSQL")
 const Commando = require('discord.js-commando');
 const client = new Commando.Client({
   owner: '206620273443602432'
@@ -6,15 +14,23 @@ const client = new Commando.Client({
 const path = require('path');
 const records = require('./util/records');
 
+pool.connect();
+
+client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  client.end();
+});
+
 client.registry.registerGroups([
   ['auto', 'Automatic commands such as join/leave messages.'],
   ['roles', 'Commands related to roles and their assignment.'],
   ['moderation', 'Commands related to server moderation']
 ]).registerDefaults().registerCommandsIn(path.join(__dirname, 'commands'))
 
-client.setProvider(
-  sqlite.open(path.join(__dirname, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
-).catch(console.error);
+client.setProvider(new SequelizeProvider(Database.db));
 
 client
   .on('error', console.error)
