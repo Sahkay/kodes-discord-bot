@@ -70,7 +70,9 @@ client
     let server = records.get(member.guild.id);
     if (server.join != undefined && server.channel != undefined) {
       let msg = server.join.replace('{user}', '<@' + member.id + '>');
-      member.guild.channels.find("name", server.channel).send(msg);
+      member.guild.channels.find("name", server.channel).send(msg, {
+        files: [member.user.avatarURL]
+      });
     }
     if (server.role != undefined) {
       let role = member.guild.roles.find("name", server.role);

@@ -9,7 +9,7 @@ module.exports = class JoinCommand extends Commando.Command {
       group: "auto",
       memberName: "join",
       description: "Sets up the current channel for user join messages.",
-      examples: ["join Welcome USER"],
+      examples: ["join Welcome {user}"],
       guildOnly: true,
       args: [{
         key: 'text',
