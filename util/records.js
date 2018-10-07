@@ -23,7 +23,7 @@ function setRecord(id, property, value, property2, value2) {
     }
   }).then(exists => {
     if (exists) {
-      global.pool.query("UPDATE serverData SET $1 = $2, $3 = $4 WHERE serverID = $5", [property, value, property2, value2, id], (err, res) => {
+      global.pool.query(`UPDATE serverData SET ${property} = $1, ${property2} = $2 WHERE serverID = $3`, [value, value2, id], (err, res) => {
         if (err) throw err;
       });
     }
