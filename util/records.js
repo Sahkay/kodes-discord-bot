@@ -1,31 +1,20 @@
-const fs = require('fs');
-const dir = 'servers.json';
-
-function write(content) {
-  fs.writeFileSync(dir, content);
-}
-
-function read() {
-  return fs.readFileSync(dir, 'utf-8');
-}
-
-function getArrayFromJSON(file) {
-  if (file != '') {
-    return JSON.parse(file);
-  } else {
-    return [];
-  }
-}
-
 function getRecord(id) {
-  let file = read();
+  /*let file = read();
   let servers = getArrayFromJSON(file);
   for (i = 0; i < servers.length; i++) {
     if (servers[i].id == id) {
       return servers[i];
     }
   }
-  return undefined;
+  return undefined;*/
+  global.pool.query("SELECT * FROM serverData WHERE serverID = $1", [id], (err, res) => {
+    if (err) throw err;
+    if (res.rows.length) {
+      return res.rows[0];
+    } else {
+      return undefined;
+    }
+  })
 }
 
 function hasRecord(id) {
@@ -34,41 +23,44 @@ function hasRecord(id) {
 
 function setRecord(id, property, value) {
   //Modify
-  let file = read();
-  let servers = getArrayFromJSON(file);
+  //let file = read();
+  //let servers = getArrayFromJSON(file);
   //Add guild to JSON
   if (hasRecord(id)) {
-    for (i = 0; i < servers.length; i++) {
+    /*for (i = 0; i < servers.length; i++) {
       if (servers[i].id == id) {
         let s = servers[i];
         s[property] = value;
         servers[i] = s;
         break;
       }
-    }
+    } */
+    global.pool.query("UPDATE serverData SET $1 = $2 WHERE serverID = $3", [property, value, id], (err, res) => {
+      if (err) throw err;
+    });
   } else {
-    servers.push({
+    /* servers.push({
       id: id
     });
-    servers[servers.length - 1][property] = value;
+    servers[servers.length - 1][property] = value; */
+    global.pool.query("INSERT INTO serverData (serverID, $1) VALUES ($2, $3)", [property, id, value], (err, res) => {
+      if (err) throw err;
+    });
   }
-  //Save JSON to file
-  write(JSON.stringify(servers));
 }
 
 function delRecord(id) {
-  let file = read();
+  /* let file = read();
   let servers = getArrayFromJSON(file);
   for (i = 0; i < servers.length; i++) {
     if (servers[i].id == id) {
       servers.splice(i, 1);
     }
-  }
-  write(JSON.stringify(servers));
+  } */
+  global.pool.query("DELETE FROM serverData WHERE serverID = $1", [id], (err, res) => {
+    if (err) throw err;
+  });
 }
-
-//Initialize
-fs.openSync(dir, 'a');
 
 //MODULE
 module.exports.add = function(id) {
