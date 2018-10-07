@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 const Sequelize = require('sequelize');
-const winston = require('winston');
 
 const {
   DB
@@ -38,15 +37,15 @@ class Database {
 
   static start() {
     database.authenticate()
-      .then(() => winston.info('[POSTGRES]: Connection to database has been established successfully.'))
-      .then(() => winston.info('[POSTGRES]: Synchronizing database...'))
+      .then(() => console.log('[POSTGRES]: Connection to database has been established successfully.'))
+      .then(() => console.log('[POSTGRES]: Synchronizing database...'))
       .then(() => database.sync()
-        .then(() => winston.info('[POSTGRES]: Done Synchronizing database!'))
-        .catch(error => winston.error(`[POSTGRES]: Error synchronizing the database: \n${error}`))
+        .then(() => console.log('[POSTGRES]: Done Synchronizing database!'))
+        .catch(error => console.error(`[POSTGRES]: Error synchronizing the database: \n${error}`))
       )
       .catch(error => {
-        winston.error(`[POSTGRES]: Unable to connect to the database: \n${error}`);
-        winston.error(`[POSTGRES]: Try reconnecting in 5 seconds...`);
+        console.error(`[POSTGRES]: Unable to connect to the database: \n${error}`);
+        console.error(`[POSTGRES]: Try reconnecting in 5 seconds...`);
         setTimeout(() => Database.start(), 5000);
       });
   }
