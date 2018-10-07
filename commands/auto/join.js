@@ -22,8 +22,6 @@ module.exports = class JoinCommand extends Commando.Command {
   run(msg, {
     text
   }) {
-    console.log(msg.member.guild.id);
-    records.put(msg.member.guild.id, "joinMsg", text);
-    records.put(msg.member.guild.id, 'msgChannel', msg.channel.name);
+    records.put(msg.member.guild.id, "joinMsg", text, 'msgChannel', msg.channel.name);
   }
 }

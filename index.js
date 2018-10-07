@@ -80,23 +80,20 @@ client
     records.remove(guild.id);
   })
   .on('guildMemberAdd', member => {
-    console.log(member.guild.id);
-    let server = records.get(member.guild.id);
-    console.log(server);
-    if (server.join != undefined && server.channel != undefined) {
-      let msg = server.join.replace('{user}', '<@' + member.id + '>');
-      member.guild.channels.find("name", server.channel).send(msg, {
-        files: [member.user.avatarURL]
-      });
-    }
-    if (server.role != undefined) {
-      let role = member.guild.roles.find("name", server.role);
-      if (role != undefined) {
-        member.addRole(role).catch(error => {
-          member.guild.owner.send("Error on **" + member.guild.name + "**: I dont have the permission to auto-assign the role you set. Make sure my role `Welcome Bot` is higher in the roles list than the one you want me to auto-assign");
+    let serverQuery = records.get(member.guild.id).then(res => {
+      if (res.rows.length) {
+        return res.rows[0]
+      } else {
+        return {};
+      }
+    }).then(server => {
+      if (server.join != undefined && server.channel != undefined) {
+        let msg = server.join.replace('{user}', '<@' + member.id + '>');
+        member.guild.channels.find("name", server.channel).send(msg, {
+          files: [member.user.avatarURL]
         });
       }
-    }
+    })
   });
 
 client.login(process.env.TOKEN)

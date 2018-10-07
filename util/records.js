@@ -7,46 +7,27 @@ function getRecord(id) {
     }
   }
   return undefined;*/
-  global.pool.query(`SELECT * FROM serverData WHERE serverID = ${id}`, (err, res) => {
-    if (err) throw err;
-    if (res.rows.length) {
-      return res.rows[0];
-    } else {
-      return undefined;
-    }
-  })
+  return global.pool.query("SELECT * FROM serverData WHERE serverID = $1", [id])
 }
 
-function hasRecord(id) {
-  return getRecord(id) != undefined;
-}
-
-function setRecord(id, property, value) {
+function setRecord(id, property, value, property2, value2) {
   //Modify
   //let file = read();
   //let servers = getArrayFromJSON(file);
   //Add guild to JSON
-  if (hasRecord(id)) {
-    /*for (i = 0; i < servers.length; i++) {
-      if (servers[i].id == id) {
-        let s = servers[i];
-        s[property] = value;
-        servers[i] = s;
-        break;
-      }
-    } */
-    global.pool.query("UPDATE serverData SET $1 = $2 WHERE serverID = $3", [property, value, id], (err, res) => {
-      if (err) throw err;
-    });
-  } else {
-    /* servers.push({
-      id: id
-    });
-    servers[servers.length - 1][property] = value; */
-    global.pool.query(`INSERT INTO serverData (serverID, ${property}) VALUES ($1, $2)`, [id, value], (err, res) => {
-      if (err) throw err;
-    });
-  }
+  getRecord(id).then(res => {
+    if (res.rows.length) {
+      return true;
+    } else {
+      return false;
+    }
+  }).then(exists => {
+    if (exists) {
+      global.pool.query("UPDATE serverData SET $1 = $2, $3 = $4 WHERE serverID = $5", [property, value, property2, value2, id], (err, res) => {
+        if (err) throw err;
+      });
+    }
+  })
 }
 
 function delRecord(id) {
@@ -64,8 +45,7 @@ function delRecord(id) {
 
 //MODULE
 module.exports.add = function(id) {
-  setRecord(id, 'join', 'Welcome {user}');
-  setRecord(id, 'channel', 'general');
+  setRecord(id, 'joinMsg', 'Welcome {user}', 'msgChannel', 'general');
 };
 
 module.exports.remove = function(id) {
@@ -76,10 +56,6 @@ module.exports.get = function(id) {
   return getRecord(id);
 }
 
-module.exports.has = function(id) {
-  return hasRecord(id);
-}
-
-module.exports.put = function(id, property, value) {
-  setRecord(id, property, value);
+module.exports.put = function(id, property, value, property2, value2) {
+  setRecord(id, property, value, property2, value2);
 }
