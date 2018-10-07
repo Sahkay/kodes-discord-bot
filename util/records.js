@@ -15,6 +15,11 @@ function setRecord(id, property, value, property2, value2) {
         if (err) throw err;
         return true;
       });
+    } else {
+      global.pool.query(`INSERT INTO serverData (serverID, ${property}, ${property2}) VALUES ($1, $2, $3)`, [id, value, value2], (err, res) => {
+        if (err) throw err;
+        return true;
+      })
     }
   })
 }
