@@ -23,7 +23,7 @@ pool.connect();
   }
   pool.end();
 }); */
-pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, joinMsg text NULL, msgChannel text NULL)", (err, res) => {
+pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, joinMsg text NULL, joinMsgChannel text NULL, leaveMsg text Null, leaveMsgChannel text NULL)", (err, res) => {
   if (err) throw err;
   //pool.end();
 })
@@ -87,10 +87,25 @@ client
         return {};
       }
     }).then(server => {
-      console.log(server);
-      if (server.joinmsg != undefined && server.msgchannel != undefined) {
+      if (server.joinmsg != undefined && server.joinmsgchannel != undefined) {
         let msg = server.joinmsg.replace('{user}', '<@' + member.id + '>');
-        member.guild.channels.find("name", server.msgchannel).send(msg, {
+        member.guild.channels.find("name", server.joinmsgchannel).send(msg, {
+          files: [member.user.avatarURL]
+        });
+      }
+    })
+  })
+  .on('guildMemberRemove', member => {
+    let serverQuery = records.get(member.guild.id).then(res => {
+      if (res.rows.length) {
+        return res.rows[0]
+      } else {
+        return {};
+      }
+    }).then(server => {
+      if (server.leavemsg != undefined && server.leavemsgchannel != undefined) {
+        let msg = server.leavemsg.replace('{user}', '<@' + member.id + '>');
+        member.guild.channels.find("name", server.leavemsgchannel).send(msg, {
           files: [member.user.avatarURL]
         });
       }

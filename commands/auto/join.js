@@ -5,7 +5,7 @@ module.exports = class JoinCommand extends Commando.Command {
   constructor(client) {
     super(client, {
       name: "join",
-      aliases: ["welcome"],
+      aliases: ["welcome", "hello", "hi", "hey"],
       group: "auto",
       memberName: "join",
       description: "Sets up the current channel for user join messages.",
@@ -22,6 +22,6 @@ module.exports = class JoinCommand extends Commando.Command {
   run(msg, {
     text
   }) {
-    records.put(msg.member.guild.id, "joinMsg", text, 'msgChannel', msg.channel.name);
+    records.put(msg.member.guild.id, "joinMsg", text, 'joinMsgChannel', msg.channel.name);
   }
 }
