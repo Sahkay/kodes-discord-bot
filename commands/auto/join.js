@@ -18,7 +18,7 @@ module.exports = class JoinCommand extends Commando.Command {
     const messageArg = msg.argString;
     this.client.on("guildMemberAdd", member => {
       member.guild.channels.get(channel.id).send(messageArg.replace("USER", member), {
-        files: [member.user.avatarURL()]
+        files: [member.avatarURL()]
       });
     })
   }
