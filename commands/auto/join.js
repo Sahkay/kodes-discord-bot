@@ -23,7 +23,7 @@ module.exports = class JoinCommand extends Commando.Command {
     text
   }) {
     console.log(msg.member.guild.id);
-    records.put(msg.member.guild.id, "join", text);
-    records.put(msg.member.guild.id, 'channel', msg.channel.name);
+    records.put(msg.member.guild.id, "joinMsg", text);
+    records.put(msg.member.guild.id, 'msgChannel', msg.channel.name);
   }
 }
