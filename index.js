@@ -87,6 +87,7 @@ client
         return {};
       }
     }).then(server => {
+      console.log(server);
       if (server.join != undefined && server.channel != undefined) {
         let msg = server.join.replace('{user}', '<@' + member.id + '>');
         member.guild.channels.find("name", server.channel).send(msg, {
