@@ -37,7 +37,7 @@ client
     console.warn('Reconnecting...');
   })
   .on('commandError', (cmd, err) => {
-    if (err instanceof commando.FriendlyError) return;
+    if (err instanceof Commando.FriendlyError) return;
     console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
   })
   .on('commandBlocked', (msg, reason) => {
