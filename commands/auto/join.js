@@ -1,6 +1,4 @@
-const {
-  Commando
-} = require('discord.js-commando');
+const Commando = require('discord.js-commando');
 
 module.exports = class JoinCommand extends Commando.Command {
   constructor(client) {
