@@ -60,7 +60,9 @@ client
     records.remove(guild.id);
   })
   .on('guildMemberAdd', member => {
+    console.log(member.guild.id);
     let server = records.get(member.guild.id);
+    console.log(server);
     if (server.join != undefined && server.channel != undefined) {
       let msg = server.join.replace('{user}', '<@' + member.id + '>');
       member.guild.channels.find("name", server.channel).send(msg, {
