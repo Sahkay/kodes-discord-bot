@@ -7,7 +7,7 @@ function getRecord(id) {
     }
   }
   return undefined;*/
-  global.pool.query("SELECT * FROM serverData WHERE serverID = $1", [id], (err, res) => {
+  global.pool.query(`SELECT * FROM serverData WHERE serverID = ${id}`, (err, res) => {
     if (err) throw err;
     if (res.rows.length) {
       return res.rows[0];
