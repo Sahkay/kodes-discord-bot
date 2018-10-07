@@ -1,4 +1,3 @@
-const axios = require('axios');
 const sqlite = require('sqlite');
 const Commando = require('discord.js-commando');
 const client = new Commando.Client({
@@ -6,12 +5,6 @@ const client = new Commando.Client({
 });
 const path = require('path');
 const records = require('./util/records');
-const config = {
-  prefix: '!',
-  bddatabaseUrl: 'https://bddatabase.net/',
-  searchUrl: 'https://bddatabase.net/ac.php?l=us&term=',
-  questRewardUrl: 'https://bddatabase.net/query.php?l=us&a=quests&type=questrewards&id='
-};
 
 client.registry.registerGroups([
   ['auto', 'Automatic commands such as join/leave messages.'],
