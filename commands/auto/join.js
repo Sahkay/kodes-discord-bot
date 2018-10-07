@@ -14,8 +14,7 @@ module.exports = class JoinCommand extends Commando.Command {
       args: [{
         key: 'text',
         prompt: "What would you like the welcome message to be?",
-        type: "string",
-        infinite: true
+        type: "string"
       }]
     })
   }
