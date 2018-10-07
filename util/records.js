@@ -43,7 +43,7 @@ function setRecord(id, property, value) {
       id: id
     });
     servers[servers.length - 1][property] = value; */
-    global.pool.query("INSERT INTO serverData (serverID, $1) VALUES ($2, $3)", [property, id, value], (err, res) => {
+    global.pool.query("INSERT INTO serverData (serverID, ${property}) VALUES ($1, $2)", [id, value], (err, res) => {
       if (err) throw err;
     });
   }
@@ -57,7 +57,7 @@ function delRecord(id) {
       servers.splice(i, 1);
     }
   } */
-  global.pool.query("DELETE FROM serverData WHERE serverID = ${id}", (err, res) => {
+  global.pool.query("DELETE FROM serverData WHERE serverID = $1", [id], (err, res) => {
     if (err) throw err;
   });
 }
