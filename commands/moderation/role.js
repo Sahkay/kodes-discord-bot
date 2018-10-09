@@ -1,4 +1,5 @@
 const Commando = require('discord.js-commando');
+const records = require('../../util/records');
 
 module.exports = class RoleCommand extends Commando.Command {
   constructor(client) {
