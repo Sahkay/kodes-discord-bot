@@ -74,5 +74,5 @@ module.exports.putDouble = function(id, property, value, property2, value2) {
 }
 
 module.exports.put = function(id, property, value) {
-  setRecord(id, proprty, value);
+  setRecord(id, property, value);
 }
