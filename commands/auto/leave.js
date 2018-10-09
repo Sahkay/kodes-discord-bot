@@ -22,6 +22,6 @@ module.exports = class LeaveCommand extends Commando.Command {
   run(msg, {
     text
   }) {
-    records.put(msg.member.guild.id, "leaveMsg", text, 'leaveMsgChannel', msg.channel.name);
+    records.putDouble(msg.member.guild.id, "leaveMsg", text, 'leaveMsgChannel', msg.channel.name);
   }
 }

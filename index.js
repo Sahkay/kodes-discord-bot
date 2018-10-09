@@ -23,7 +23,7 @@ pool.connect();
   }
   pool.end();
 }); */
-pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, joinMsg text NULL, joinMsgChannel text NULL, leaveMsg text Null, leaveMsgChannel text NULL)", (err, res) => {
+pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, roleGiver bigint NULL, joinMsg text NULL, joinMsgChannel text NULL, leaveMsg text Null, leaveMsgChannel text NULL)", (err, res) => {
   if (err) throw err;
   //pool.end();
 })
