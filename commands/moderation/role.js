@@ -54,6 +54,5 @@ module.exports = class RoleSetupCommand extends Commando.Command {
     role
   }) {
     console.log(role);
-    return role;
   }
 }
