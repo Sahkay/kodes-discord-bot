@@ -53,6 +53,6 @@ module.exports = class RoleSetupCommand extends Commando.Command {
   run(msg, {
     desiredRole
   }) {
-    console.log(desiredRole.name);
+    records.put(msg.member.guild.id, "roleGiver", desiredRole.id);
   }
 }
