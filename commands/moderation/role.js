@@ -43,7 +43,7 @@ module.exports = class RoleSetupCommand extends Commando.Command {
       examples: ["rolesetup admin"],
       guildOnly: true,
       args: [{
-        key: 'role',
+        key: 'desiredRole',
         prompt: "What role would you like to be able to use the role command?",
         type: "role"
       }]
@@ -51,8 +51,8 @@ module.exports = class RoleSetupCommand extends Commando.Command {
   }
 
   run(msg, {
-    role
+    desiredRole
   }) {
-    console.log(role);
+    console.log(desiredRole);
   }
 }
