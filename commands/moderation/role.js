@@ -53,6 +53,6 @@ module.exports = class RoleSetupCommand extends Commando.Command {
   run(msg, {
     desiredRole
   }) {
-    console.log(desiredRole);
+    console.log(desiredRole.name);
   }
 }
