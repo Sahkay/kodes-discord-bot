@@ -80,7 +80,7 @@ client
     records.remove(guild.id);
   })
   .on('guildMemberAdd', member => {
-    let serverQuery = records.get(member.guild.id).then(res => {
+    records.get(member.guild.id).then(res => {
       if (res.rows.length) {
         return res.rows[0]
       } else {

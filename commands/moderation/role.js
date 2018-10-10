@@ -29,7 +29,18 @@ module.exports = class RoleCommand extends Commando.Command {
     user,
     role
   }) {
-    //records.put(msg.member.guild.id, "joinMsg", text, 'joinMsgChannel', msg.channel.name);
+    records.get(msg.member.guild.id).then(res => {
+      if (res.rows.length) {
+        return res.rows[0]
+      } else {
+        return {};
+      }
+    }).then(server => {
+      if (server.roleGiver != undefined && msg.member.roles.has(server.roleGiver)) {
+        user.addRole(role);
+        msg.reply(`Gave ${role} to ${user}`);
+      }
+    });
   }
 }
 
