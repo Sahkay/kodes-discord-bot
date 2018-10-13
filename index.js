@@ -1,9 +1,29 @@
+/* Requirements:
+	Welcome Message setup by only owner with auto role on joined user
+	Leave Message setup by only owner
+	with roles store role groups (i.e. prevent multiple races)
+	Assign Role Command:
+		Assign multiple roles at once
+		Setup:
+			Allow multiple roles using single command that overrides previous setups
+			setup for what roles can be assigned
+		Remove role command with seperate setup and seperate takeable roles
+	React Role Command (more than one role per reaction)
+	Blacklist:
+		Counts warnings for members, who is banned and why
+	Ban Command with similar setup to assign role
+	Unban Command uses setup for ban
+	Warning command:
+		similar setup to assign role
+		Dm player with reason and strip roles for one hour using timer stored in db
+*/
+
 const {
   Pool
 } = require('pg');
 global.pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: true,
+  //ssl: true,
 });
 const SequelizeProvider = require("./util/sequelize");
 const Database = require("./util/PostgreSQL")
@@ -23,18 +43,34 @@ pool.connect();
   }
   pool.end();
 }); */
-pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, roleGiver bigint NULL, joinMsg text NULL, joinMsgChannel text NULL, leaveMsg text Null, leaveMsgChannel text NULL)", (err, res) => {
+
+/* pool.query("CREATE TABLE IF NOT EXISTS serverData (serverID bigint PRIMARY KEY, roleGivers bigint[] NULL, giveableRoles bigint[] NULL, roleTakers bigint[] NULL, takeableRoles bigint[] NULL, joinRole bigint NULL, joinMsg text NULL, joinMsgChannel bigint NULL, leaveMsg text Null, leaveMsgChannel bigint NULL, reactRoles bigint[][], warnTimers warn_timer[])", (err, res) => {
   if (err) throw err;
   //pool.end();
-})
+});
 
+pool.query("CREATE TABLE IF NOT EXISTS warnedMembers (warnedMemberID integer PRIMARY KEY, serverID bigint REFERENCES serverData, memberID bigint, endTime timestamp NULL, warningCount smallint DEFAULT 0, reason text NULL, banned boolean DEFAULT false)", (err, res) => {
+  if (err) throw err;
+  //pool.end();
+});
+
+pool.query("CREATE TABLE IF NOT EXISTS roleGroups (roleGroupID integer PRIMARY KEY, serverID bigint REFERENCES serverData, roles bigint[] NULL, groupName text NULL, groupLabelRole bigint NULL)", (err, res) => {
+  if (err) throw err;
+  //pool.end();
+});
+
+pool.query("CREATE TABLE IF NOT EXISTS reactRolesMessages (reactRolesMessageID integer PRIMARY KEY, serverID bigint REFERENCES serverData, roleGroupID integer REFERENCES roleGroups, groupName text NULL, groupLabelRole bigint NULL)", (err, res) => {
+  if (err) throw err;
+  //pool.end();
+}); */
+global.settings = new SequelizeProvider(Database.db);
 client.registry.registerGroups([
   ['auto', 'Automatic commands such as join/leave messages.'],
-  ['roles', 'Commands related to roles and their assignment.'],
-  ['moderation', 'Commands related to server moderation']
+  ['moderation', 'Commands related to server moderation.'],
+  ['setup', 'Commands used to setup permissions and the like for other commands.']
 ]).registerDefaults().registerCommandsIn(path.join(__dirname, 'commands'))
 
-client.setProvider(new SequelizeProvider(Database.db));
+client.setProvider(global.settings);
 
 client
   .on('error', console.error)
@@ -90,8 +126,11 @@ client
       if (server.joinmsg != undefined && server.joinmsgchannel != undefined) {
         let msg = server.joinmsg.replace('{user}', '<@' + member.id + '>');
         member.guild.channels.find("name", server.joinmsgchannel).send(msg, {
-          files: [member.user.avatarURL]
+          files: [member.user.avatarURL.indexOf("?") > -1 ? member.user.avatarURL.substring(0, member.user.avatarURL.indexOf("?")) : member.user.avatarURL]
         });
+        if (server.joinRole != undefined) {
+          member.addRole(server.joinRole);
+        }
       }
     })
   })

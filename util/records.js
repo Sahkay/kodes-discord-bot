@@ -70,9 +70,9 @@ module.exports.get = function(id) {
 }
 
 module.exports.putDouble = function(id, property, value, property2, value2) {
-  setRecords(id, property, value, property2, value2);
+  return setRecords(id, property, value, property2, value2);
 }
 
 module.exports.put = function(id, property, value) {
-  setRecord(id, property, value);
+  return setRecord(id, property, value);
 }

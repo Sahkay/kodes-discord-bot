@@ -1,20 +1,20 @@
 const Commando = require('discord.js-commando');
-const records = require('../../util/records');
+//const records = require('../../util/records');
 
 module.exports = class RoleCommand extends Commando.Command {
   constructor(client) {
     super(client, {
       name: "role",
-      aliases: ["give"],
+      aliases: ["addrole"],
       group: "moderation",
       memberName: "role",
-      description: "Gives the specified user the specified role",
-      examples: ["role @user#1111 admin"],
+      description: "Gives the specified member the specified role",
+      examples: ["role @member#1111 admin"],
       guildOnly: true,
       args: [{
-          key: 'user',
-          prompt: "What user would you like to give a role?",
-          type: "user"
+          key: 'member',
+          prompt: "What member would you like to give a role?",
+          type: "member"
         },
         {
           key: 'role',
@@ -26,45 +26,32 @@ module.exports = class RoleCommand extends Commando.Command {
   }
 
   run(msg, {
-    user,
+    member,
     role
   }) {
-    records.get(msg.member.guild.id).then(res => {
+    /* records.get(msg.guild.id).then(res => {
       if (res.rows.length) {
         return res.rows[0]
       } else {
         return {};
       }
     }).then(server => {
-      if (server.roleGiver != undefined && msg.member.roles.has(server.roleGiver)) {
-        user.addRole(role);
-        msg.reply(`Gave ${role} to ${user}`);
+      if (msg.guild.ownerID === msg.member.id || (server.roleGivers != undefined && msg.member.roles.has(server.roleGivers))) {
+        member.addRole(role);
+        msg.reply(`Gave ${role} to ${member}.`);
+      } else if (server.roleGivers == undefined) {
+        msg.reply(`This command has not been setup. Please notify ${msg.guild.owner.displayName} to setup this command.`)
+      } else {
+        msg.reply(`You cannot use this command.`)
       }
-    });
-  }
-}
-
-module.exports = class RoleSetupCommand extends Commando.Command {
-  constructor(client) {
-    super(client, {
-      name: "rolesetup",
-      aliases: ["givesetup"],
-      group: "moderation",
-      memberName: "rolesetup",
-      description: "Sets up the specified role to be able to use the role command",
-      examples: ["rolesetup admin"],
-      guildOnly: true,
-      args: [{
-        key: 'desiredRole',
-        prompt: "What role would you like to be able to use the role command?",
-        type: "role"
-      }]
-    })
-  }
-
-  run(msg, {
-    desiredRole
-  }) {
-    records.put(msg.member.guild.id, "roleGiver", desiredRole.id);
+    }); */
+    if (msg.guild.ownerID === msg.member.id || (global.settings.get(msg.guild.id, "roleGivers", false) && server.roleGivers.filter(element => msg.member.roles.has(element)).length > 0)) {
+      member.addRole(role);
+      msg.reply(`Gave ${role} to ${member}.`);
+    } else if (!global.settings.get(msg.guild.id, "roleGivers", false)) {
+      msg.reply(`This command has not been setup. Please notify ${msg.guild.owner.displayName} to setup this command.`)
+    } else {
+      msg.reply(`You cannot use this command.`)
+    }
   }
 }
