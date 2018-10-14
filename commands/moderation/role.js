@@ -1,5 +1,4 @@
 const Commando = require('discord.js-commando');
-//const records = require('../../util/records');
 
 module.exports = class RoleCommand extends Commando.Command {
   constructor(client) {
@@ -19,7 +18,8 @@ module.exports = class RoleCommand extends Commando.Command {
         {
           key: 'role',
           prompt: "What role would you like to give?",
-          type: "role"
+          type: "role",
+          infinite: true
         }
       ]
     })
@@ -29,27 +29,30 @@ module.exports = class RoleCommand extends Commando.Command {
     member,
     role
   }) {
-    /* records.get(msg.guild.id).then(res => {
-      if (res.rows.length) {
-        return res.rows[0]
+    let roleGivers = global.settings.get(msg.guild.id, "roleGivers", false);
+    let giveableRoles = global.settings.get(msg.guild.id, "giveableRoles", false);
+    if (msg.guild.ownerID === msg.member.id) {
+      member.addRoles(role);
+      msg.reply(`Gave ${role.map(x => x.name)} to ${member}.`);
+    } else if (roleGivers && giveableRoles && roleGivers.filter(element => msg.member.roles.has(element)).length > 0) {
+      let allowedRoles = role.filter(element => giveableRoles.includes(element.id));
+      if (!allowedRoles.length) {
+        msg.reply("You cannot give any of these roles.");
+      } else if (allowedRoles.length == role.length) {
+        member.addRoles(role).catch(err => {
+          return false;
+        });
+        msg.reply(`Gave ${role.map(x => x.name)} to ${member}.`);
       } else {
-        return {};
+        member.addRoles(allowedRoles).catch(err => {
+          return false;
+        });
+        msg.reply(`Gave ${allowedRoles.map(x => x.name)} to ${member} but you cannot give ${role.filter(element => !giveableRoles.includes(element.id)).map(x => x.name)}.`)
       }
-    }).then(server => {
-      if (msg.guild.ownerID === msg.member.id || (server.roleGivers != undefined && msg.member.roles.has(server.roleGivers))) {
-        member.addRole(role);
-        msg.reply(`Gave ${role} to ${member}.`);
-      } else if (server.roleGivers == undefined) {
-        msg.reply(`This command has not been setup. Please notify ${msg.guild.owner.displayName} to setup this command.`)
-      } else {
-        msg.reply(`You cannot use this command.`)
-      }
-    }); */
-    if (msg.guild.ownerID === msg.member.id || (global.settings.get(msg.guild.id, "roleGivers", false) && server.roleGivers.filter(element => msg.member.roles.has(element)).length > 0)) {
-      member.addRole(role);
-      msg.reply(`Gave ${role} to ${member}.`);
-    } else if (!global.settings.get(msg.guild.id, "roleGivers", false)) {
-      msg.reply(`This command has not been setup. Please notify ${msg.guild.owner.displayName} to setup this command.`)
+    } else if (!roleGivers) {
+      msg.reply(`This command has not been setup with role givers. Please notify ${msg.guild.owner.displayName} to setup this command.`);
+    } else if (!giveableRoles) {
+      msg.reply(`This command has not been setup with giveable roles. Please notify ${msg.guild.owner.displayName} to setup this command.`);
     } else {
       msg.reply(`You cannot use this command.`)
     }
