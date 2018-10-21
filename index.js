@@ -96,6 +96,9 @@ client
         files: [member.user.avatarURL.indexOf("?") > -1 ? member.user.avatarURL.substring(0, member.user.avatarURL.indexOf("?")) : member.user.avatarURL]
       });
     }
+  })
+  .on('messageReactionAdd', (reaction, user) => {
+    console.log(user.hasOwnProperty("user"));
   });
 
 client.login(process.env.TOKEN)
