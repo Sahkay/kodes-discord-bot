@@ -1,5 +1,11 @@
 const Commando = require('discord.js-commando');
-const Name = require("emoji-name-map");
+const Name = require("emoji-unicode-map");
+
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
 
 module.exports = class ReactRoleCommand extends Commando.Command {
   constructor(client) {
@@ -19,10 +25,7 @@ module.exports = class ReactRoleCommand extends Commando.Command {
         {
           key: 'template',
           prompt: "Enter the message using appropriate sections for reactions",
-          type: "string",
-          parse: text => {
-            return text.replace(/```/g, '');
-          }
+          type: "string"
         }
       ]
     })
@@ -32,7 +35,7 @@ module.exports = class ReactRoleCommand extends Commando.Command {
     channel,
     template
   }) {
-    let templateSplit = template.split(/({[^\s{}]+})/g).filter(function(el) {
+    let templateSplit = template.split(/({[^{}]+})/g).filter(function(el) {
       return el !== "";
     });
     let messages = [];
@@ -46,14 +49,13 @@ module.exports = class ReactRoleCommand extends Commando.Command {
           return false;
         } else {
           let tempSplit = value.trim().slice(1, -1).split(",").map(x => x.trim());
-          console.log(tempSplit[0].slice(1, -1));
-          if (!this.client.emojis.find(emoji => emoji.name === tempSplit[0].slice(1, -1))) {
+          if (!this.client.emojis.find(emoji => emoji.id === tempSplit[0].slice(1, -1).replace(/([^:]*:){2}/, ''))) {
             if (!Name.get(tempSplit[0])) {
               msg.reply(`I cannot use the ${tempSplit[0]} emoji that you provided.`);
               return false;
             }
           }
-          messages[messages.length - 1].reaction = this.client.emojis.find(emoji => emoji.name === tempSplit[0].slice(1, -1)) ? this.client.emojis.find(emoji => emoji.name === tempSplit[0].slice(1, -1)).id : Name.get(tempSplit[0]);
+          messages[messages.length - 1].reaction = this.client.emojis.find(emoji => emoji.id === tempSplit[0].slice(1, -1).replace(/([^:]*:){2}/, '')) ? this.client.emojis.find(emoji => emoji.id === tempSplit[0].slice(1, -1).replace(/([^:]*:){2}/, '')).id : tempSplit[0];
           messages[messages.length - 1].roles = tempSplit.slice(1);
           messages[messages.length - 1].used = true;
           return true;
@@ -68,24 +70,31 @@ module.exports = class ReactRoleCommand extends Commando.Command {
         return true;
       }
     }, this);
-    console.log(continueHandler);
     if (continueHandler) {
-      sendMessages(channel, messages);
+      sendMessages(channel, messages, msg.guild.id);
     }
-    console.log(template)
   }
 }
 
-function sendMessages(channel, messages) {
-  messages.forEach(async function(value) {
-    await channel.send(value.message).then(msg => {
-      msg.react(value.reaction).then(reaction => {
-
+const sendMessages = async (channel, messages, guildID) => {
+  let gotError = false;
+  await asyncForEach(messages, async (value) => {
+    await channel.send(value.message).then(async (msg) => {
+      await msg.react(value.reaction).then(reaction => {
+        value.id = msg.id;
       }).catch(err => {
         console.log(err);
+        gotError = true;
       })
     }).catch(err => {
       console.log(err);
+      gotError = true;
     });
   });
+  if (!gotError) {
+    global.settings.set(guildID, "reactRoles", {
+      channel: channel.id,
+      messages: messages
+    });
+  }
 }

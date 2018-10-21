@@ -98,7 +98,7 @@ client
     }
   })
   .on('messageReactionAdd', (reaction, user) => {
-    console.log(user.hasOwnProperty("user"));
+    console.log(user);
   });
 
 client.login(process.env.TOKEN)
