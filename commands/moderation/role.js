@@ -32,7 +32,9 @@ module.exports = class RoleCommand extends Commando.Command {
     let roleGivers = global.settings.get(msg.guild.id, "roleGivers", false);
     let giveableRoles = global.settings.get(msg.guild.id, "giveableRoles", false);
     if (msg.guild.ownerID === msg.member.id) {
-      member.addRoles(role);
+      member.addRoles(role).catch(err => {
+        return false;
+      });
       msg.reply(`Gave ${role.map(x => x.name)} to ${member}.`);
     } else if (roleGivers && giveableRoles && roleGivers.filter(element => msg.member.roles.has(element)).length > 0) {
       let allowedRoles = role.filter(element => giveableRoles.includes(element.id));

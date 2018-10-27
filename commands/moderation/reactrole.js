@@ -15,7 +15,7 @@ module.exports = class ReactRoleCommand extends Commando.Command {
       group: "moderation",
       memberName: "reactrole",
       description: "Sets the reaction role message for the server.",
-      examples: ["reactrole getroles Get your roles here"],
+      examples: ["reactrole getroles get admin {:grinning:, admin}"],
       guildOnly: true,
       args: [{
           key: 'channel',
@@ -55,8 +55,42 @@ module.exports = class ReactRoleCommand extends Commando.Command {
               return false;
             }
           }
+          let tempRoles = tempSplit.slice(1);
+          let validRoles = [];
+          let gotError = false;
+          for (let i = 0; i < tempRoles.length; i++) {
+            const matches2 = tempRoles[i].match(/^(?:<@&)?([0-9]+)>?$/);
+            const matches = /^(?:<@&)?([0-9]+)>?$/.exec(tempRoles[i]);
+            if (matches && msg.guild.roles.has(matches[1])) {
+              validRoles.push(matches[1]);
+            } else {
+              const search = tempRoles[i].toLowerCase();
+              let roles = msg.guild.roles.filter(nameFilterInexact(search));
+              if (roles.size > 0) {
+                if (roles.size === 1) {
+                  validRoles.push(roles.first().id);
+                } else {
+                  const exactRoles = roles.filter(nameFilterExact(search));
+                  if (exactRoles.size === 1) {
+                    validRoles.push(exactRoles.first().id);
+                  } else {
+                    msg.reply(`Too many roles match ${tempRoles[i]}.`);
+                    gotError = true;
+                    break;
+                  }
+                }
+              } else {
+                msg.reply(`I could not find the role ${tempRoles[i]}.`);
+                gotError = true;
+                break;
+              }
+            }
+          }
+          if (gotError) {
+            return false;
+          }
           messages[messages.length - 1].reaction = this.client.emojis.find(emoji => emoji.id === tempSplit[0].slice(1, -1).replace(/([^:]*:){2}/, '')) ? this.client.emojis.find(emoji => emoji.id === tempSplit[0].slice(1, -1).replace(/([^:]*:){2}/, '')).id : tempSplit[0];
-          messages[messages.length - 1].roles = tempSplit.slice(1);
+          messages[messages.length - 1].roles = validRoles;
           messages[messages.length - 1].used = true;
           return true;
         }
@@ -92,9 +126,21 @@ const sendMessages = async (channel, messages, guildID) => {
     });
   });
   if (!gotError) {
-    global.settings.set(guildID, "reactRoles", {
-      channel: channel.id,
-      messages: messages
-    });
+    global.settings.set(guildID, "reactRoles", messages).then(val => {
+      global.settings.set(guildID, "reactRolesChannel", channel.id).catch(err => {
+        msg.reply("Could not save the data.");
+      })
+    }).catch(err => {
+      msg.reply("Could not save the data.");
+    })
+
   }
+}
+
+function nameFilterExact(search) {
+  return thing => thing.name.toLowerCase() === search;
+}
+
+function nameFilterInexact(search) {
+  return thing => thing.name.toLowerCase().includes(search);
 }
