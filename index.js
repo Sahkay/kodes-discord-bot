@@ -121,15 +121,31 @@ client
             if (messageMatch[0].roles.length > 0) {
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
-                  let takeRoles = val.roles.filter(element => messageMatch[0].roles.includes(element.id));
-                  if (takeRoles.length) {
-                    val.removeRoles(takeRoles).catch(err => {
-                      console.log(error);
-                      return false;
-                    });
-                  }
                   val.addRoles(messageMatch[0].roles).catch(err => {
                     console.log(err);
+                    return false;
+                  });
+                }
+              }).catch(err => {
+                console.log(err);
+              });
+            }
+          }
+        }
+      }
+    }
+  })
+  .on('messageReactionRemove', (reaction, user) => {
+    if (!user.bot) {
+      let reactMessages = global.settings.get(reaction.message.guild.id, "reactRoles", false)
+      if (reactMessages) {
+        let messageMatch = reactMessages.filter(e => e.id === reaction.message.id);
+        if (messageMatch.length > 0) {
+          if (messageMatch[0].reaction === reaction.emoji.id || messageMatch[0].reaction === reaction.emoji.name) {
+            if (messageMatch[0].roles.length > 0) {
+              reaction.message.guild.fetchMember(user).then(val => {
+                if (val) {
+                  val.removeRoles(messageMatch[0].roles).catch(err => {
                     return false;
                   });
                 }
