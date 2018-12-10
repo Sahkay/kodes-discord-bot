@@ -92,7 +92,7 @@ client
     if (joinMsg && joinMsgChannel) {
       let msg = joinMsg.replace('{user}', '<@' + member.id + '>');
       member.guild.channels.get(joinMsgChannel).send(msg, {
-        files: [member.user.avatarURL.indexOf("?") > -1 ? member.user.avatarURL.substring(0, member.user.avatarURL.indexOf("?")) : member.user.avatarURL]
+        files: [member.user.displayAvatarURL.indexOf("?") > -1 ? member.user.displayAvatarURL.substring(0, member.user.displayAvatarURL.indexOf("?")) : member.user.displayAvatarURL]
       });
       if (joinRole) {
         member.addRole(joinRole).catch(err => {
@@ -107,7 +107,7 @@ client
     if (leaveMsg && leaveMsgChannel) {
       let msg = leaveMsg.replace('{user}', '<@' + member.id + '>');
       member.guild.channels.get(leaveMsgChannel).send(msg, {
-        files: [member.user.avatarURL.indexOf("?") > -1 ? member.user.avatarURL.substring(0, member.user.avatarURL.indexOf("?")) : member.user.avatarURL]
+        files: [member.user.displayAvatarURL.indexOf("?") > -1 ? member.user.displayAvatarURL.substring(0, member.user.displayAvatarURL.indexOf("?")) : member.user.displayAvatarURL]
       });
     }
   })
