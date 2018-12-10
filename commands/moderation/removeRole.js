@@ -8,7 +8,7 @@ module.exports = class RemoveRoleCommand extends Commando.Command {
       group: "moderation",
       memberName: "removerole",
       description: "Removes the specified role from the specified member",
-      examples: ["removerole @member#1111 admin"],
+      examples: ["removerole member admin"],
       guildOnly: true,
       args: [{
           key: 'member',

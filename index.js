@@ -9,13 +9,12 @@
 			setup for what roles can be assigned
 		Remove role command with seperate setup and seperate takeable roles
 	React Role Command (more than one role per reaction)
-	Blacklist:
-		Counts warnings for members, who is banned and why
 	Ban Command with similar setup to assign role
 	Unban Command uses setup for ban
 	Warning command:
 		similar setup to assign role
-		Dm player with reason and strip roles for one hour using timer stored in db
+		Dm player with reason and give mute role for specified time using timer stored in db
+	Auto warning with setup to be triggered on specified profanity in chat and mute the rule breaker after specified amount of infractions for specified time
 */
 const SequelizeProvider = require("./util/sequelize");
 const Database = require("./util/PostgreSQL")
@@ -40,6 +39,21 @@ client
   .on('debug', console.log)
   .on('ready', () => {
     console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+    client.guilds.forEach(guild => {
+      let warningsGiven = global.settings.get(guild.id, "warningsGiven", false);
+      Object.keys(warningsGiven).map(function(objKey, index) {
+        let dateNow = new Date();
+        let unwarnDate = new Date(warningsGiven[objKey].endTime);
+        if (dateNow >= unwarnDate) {
+          guild.fetchMember(objKey, false).then(guildMember => {
+            guildMember.removeRoles(warningsGiven[objKey].roleApplied).catch(err => {
+              console.log(err);
+              return false;
+            });
+          })
+        }
+      })
+    })
   })
   .on('disconnect', () => {
     console.warn('Disconnected!');
@@ -107,6 +121,13 @@ client
             if (messageMatch[0].roles.length > 0) {
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
+                  let takeRoles = val.roles.filter(element => messageMatch[0].roles.includes(element.id));
+                  if (takeRoles.length) {
+                    val.removeRoles(takeRoles).catch(err => {
+                      console.log(error);
+                      return false;
+                    });
+                  }
                   val.addRoles(messageMatch[0].roles).catch(err => {
                     console.log(err);
                     return false;
