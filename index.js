@@ -39,6 +39,12 @@ client
   .on('debug', console.log)
   .on('ready', () => {
     console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+    client.user.setPresence({
+      game: {
+        name: 'the entry gate',
+        type: 'WATCHING'
+      }
+    })
     client.guilds.forEach(guild => {
       let warningsGiven = global.settings.get(guild.id, "warningsGiven", false);
       Object.keys(warningsGiven).map(function(objKey, index) {
