@@ -131,6 +131,7 @@ client
                 if (val) {
                   if (raceRoles) {
                     let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
+                    console.log(ownedRaces);
                     if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
                       if (raceLabel && !val.roles.has(raceLabel)) {
                         val.addRole(raceLabel).catch(err => {
