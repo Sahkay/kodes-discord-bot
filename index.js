@@ -129,7 +129,7 @@ client
               let raceLabel = global.settings.get(reaction.message.guild.id, "raceLabel", false);
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
-                  if (raceRoles) {
+                  if (raceRoles && raceRoles.filter(r => messageMatch[0].roles.includes(r)).length) {
                     let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
                     if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
                       if (raceLabel && !val.roles.has(raceLabel)) {
@@ -139,9 +139,7 @@ client
                         });
                       }
                     } else {
-                      console.log(ownedRaces);
-                      console.log(ownedRaces.filter(r => messageMatch[0].roles.includes(r.id)));
-                      if (ownedRaces.size > 0 && ownedRaces.filter(r => messageMatch[0].roles.includes(r.id)).length) {
+                      if (ownedRaces.size > 0 && raceRoles.filter(r => messageMatch[0].roles.includes(r)).toString() !== ownedRaces.array.toString()) {
                         console.log("removing races " + ownedRaces.map(x => x.name));
                         val.removeRoles(ownedRaces).catch(err => {
                           console.log(err);
