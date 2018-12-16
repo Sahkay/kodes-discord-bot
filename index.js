@@ -140,6 +140,7 @@ client
                       }
                     } else {
                       if (ownedRaces.size > 0 && ownedRaces.filter(r => messageMatch[0].roles.includes(r.id)).length) {
+                        console.log("removing races " + ownedRace.map(x => x.name));
                         val.removeRoles(ownedRaces).catch(err => {
                           console.log(err);
                           return false;
