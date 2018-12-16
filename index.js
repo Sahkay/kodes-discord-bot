@@ -131,7 +131,7 @@ client
                 if (val) {
                   if (raceRoles) {
                     let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
-                    console.log(ownedRaces);
+                    console.log(ownedRaces.size);
                     if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
                       if (raceLabel && !val.roles.has(raceLabel)) {
                         val.addRole(raceLabel).catch(err => {
@@ -139,20 +139,28 @@ client
                           return false;
                         });
                       }
-                    } else if (ownedRaces.size > 0 && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
-                      val.removeRoles(ownedRaces).catch(err => {
-                        console.log(err);
-                        return false;
-                      });
-                      val.addRoles(messageMatch[0].roles).catch(err => {
-                        console.log(err);
-                        return false;
-                      });
                     } else {
-                      val.addRoles(messageMatch[0].roles).catch(err => {
-                        console.log(err);
-                        return false;
-                      });
+                      if (ownedRaces.size > 0 && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
+                        val.removeRoles(ownedRaces).catch(err => {
+                          console.log(err);
+                          return false;
+                        });
+                        val.addRoles(messageMatch[0].roles).catch(err => {
+                          console.log(err);
+                          return false;
+                        });
+                      } else {
+                        val.addRoles(messageMatch[0].roles).catch(err => {
+                          console.log(err);
+                          return false;
+                        });
+                      }
+                      if (raceLabel && !val.roles.has(raceLabel) && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
+                        val.addRole(raceLabel).catch(err => {
+                          console.log(err);
+                          return false;
+                        });
+                      }
                     }
                   } else {
                     val.addRoles(messageMatch[0].roles).catch(err => {
