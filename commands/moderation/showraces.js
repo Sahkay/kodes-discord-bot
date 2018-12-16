@@ -16,7 +16,7 @@ module.exports = class ShowRacesCommand extends Commando.Command {
   run(msg) {
     let savedRaces = global.settings.get(msg.guild.id, "races", false);
     if (savedRaces) {
-      msg.reply(`The races in this guild are ${savedRaces.map(x => x.name)}`);
+      msg.reply(`The races in this guild are ${msg.guild.roles.filter(r => savedRaces.includes(r.id)).map(x => x.name)}`);
     } else {
       msg.reply(`This guild has no races set.`);
     }
