@@ -28,7 +28,7 @@ module.exports = class AddRacesCommand extends Commando.Command {
         if (!newRaces.length) {
           msg.reply("These races are all already set.");
         } else if (newRaces.length === race.length) {
-          global.settings.set(msg.guild.id, "races", race.map(x => x.id)).then(val => {
+          global.settings.set(msg.guild.id, "races", savedRaces.concat(race.map(x => x.id))).then(val => {
             msg.reply("The races have been saved.");
           }).catch(err => {
             msg.reply("The races could not be saved.");
