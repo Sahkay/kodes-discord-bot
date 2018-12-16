@@ -129,23 +129,30 @@ client
               let raceLabel = global.settings.get(reaction.message.guild.id, "raceLabel", false);
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
-                  let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
-                  if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
-                    if (raceLabel && !val.roles.has(raceLabel)) {
-                      val.addRole(raceLabel).catch(err => {
+                  if (raceRoles) {
+                    let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
+                    if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
+                      if (raceLabel && !val.roles.has(raceLabel)) {
+                        val.addRole(raceLabel).catch(err => {
+                          console.log(err);
+                          return false;
+                        });
+                      }
+                    } else if (ownedRaces.size > 0 && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
+                      val.removeRoles(ownedRaces).catch(err => {
+                        console.log(err);
+                        return false;
+                      });
+                      val.addRoles(messageMatch[0].roles).catch(err => {
+                        console.log(err);
+                        return false;
+                      });
+                    } else {
+                      val.addRoles(messageMatch[0].roles).catch(err => {
                         console.log(err);
                         return false;
                       });
                     }
-                  } else if (ownedRaces.size > 0 && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
-                    val.removeRoles(ownedRaces).catch(err => {
-                      console.log(err);
-                      return false;
-                    });
-                    val.addRoles(messageMatch[0].roles).catch(err => {
-                      console.log(err);
-                      return false;
-                    });
                   } else {
                     val.addRoles(messageMatch[0].roles).catch(err => {
                       console.log(err);
@@ -174,11 +181,13 @@ client
               let raceLabel = global.settings.get(reaction.message.guild.id, "raceLabel", false);
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
-                  let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
-                  if (raceLabel && messageMatch[0].roles.filter(r => ownedRaces.map(x => x.id).includes(r)).length >= ownedRaces.length) {
-                    val.removeRole(raceLabel).catch(err => {
-                      return false;
-                    });
+                  if (raceRoles) {
+                    let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
+                    if (raceLabel && messageMatch[0].roles.filter(r => ownedRaces.map(x => x.id).includes(r)).length >= ownedRaces.length) {
+                      val.removeRole(raceLabel).catch(err => {
+                        return false;
+                      });
+                    }
                   }
                   val.removeRoles(messageMatch[0].roles).catch(err => {
                     return false;
