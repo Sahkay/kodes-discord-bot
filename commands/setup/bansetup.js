@@ -20,7 +20,6 @@ module.exports = class BanSetupCommand extends Commando.Command {
   }
 
   run(msg, {
-    give,
     role
   }) {
     let roleArray = role.map(x => x.id);
