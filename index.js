@@ -131,7 +131,7 @@ client
                 if (val) {
                   let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
                   if (messageMatch[0].roles.length === 1 && ownedRaces.size === 1 && ownedRaces.firstKey() === messageMatch[0].roles[0]) {
-                    if (!val.roles.has(raceLabel)) {
+                    if (raceLabel && !val.roles.has(raceLabel)) {
                       val.addRole(raceLabel).catch(err => {
                         console.log(err);
                         return false;
@@ -175,7 +175,7 @@ client
               reaction.message.guild.fetchMember(user).then(val => {
                 if (val) {
                   let ownedRaces = val.roles.filter(r => raceRoles.includes(r.id));
-                  if (messageMatch[0].roles.filter(r => ownedRaces.map(x => x.id).includes(r)).length >= ownedRaces.length) {
+                  if (raceLabel && messageMatch[0].roles.filter(r => ownedRaces.map(x => x.id).includes(r)).length >= ownedRaces.length) {
                     val.removeRole(raceLabel).catch(err => {
                       return false;
                     });
