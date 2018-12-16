@@ -139,9 +139,7 @@ client
                         });
                       }
                     } else {
-                      console.log(messageMatch[0].roles);
-                      console.log(messageMatch[0].roles.filter(r => raceRoles.includes(r)));
-                      if (ownedRaces.size > 0 && messageMatch[0].roles.filter(r => raceRoles.includes(r)).length) {
+                      if (ownedRaces.size > 0 && ownedRaces.filter(r => messageMatch[0].roles.includes(r.id)).length) {
                         val.removeRoles(ownedRaces).catch(err => {
                           console.log(err);
                           return false;
