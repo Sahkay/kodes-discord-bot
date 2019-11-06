@@ -29,7 +29,7 @@
 		"discord.js-commando": "^0.10.0",
 		"emoji-unicode-map": "^1.1.9",
 		"pg": "^7.5.0",
-		"sequelize": "^4.39.0",
+		"sequelize": "^5.15.1",
 		"sqlite": "^3.0.0"
 	}
 }
